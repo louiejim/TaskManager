@@ -10,27 +10,81 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./loginpage.css";
+import * as authService from "../../Services/auth";
 
 function RegisterForm() {
+
+  const navigate= useNavigate();
+
+  const [form, setForm] = useState({
+    name: "",
+    username: "",
+    password: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+const handleChange=({currentTarget:input})=>{
+  setForm({
+    ...form,
+    [input.name] : input.value
+  })
+}
+
+const handleSubmit= async(event)=>{
+  event.preventDefault()
+
+  try {
+    await authService.register(form.name,form.username,form.password)
+    alert ('Successful Registration')
+    navigate('/login')
+  } catch(error){
+      if(error.response && error.status===400){
+        alert(error.reponse.data.message)
+      }
+  }
+}
   return (
     <div className="bodies">
       <div className="wrapper">
         <h1>REGISTER</h1>
         <Divider />
         <br />
-        <div>
+    <form onSubmit={handleSubmit}>
+    <div>
+          <TextField
+            label="Name"
+            id="name"
+            name="name"
+            fullWidth
+            onChange={handleChange}
+            InputProps={{
+              style: {
+                borderRadius: "30px",
+                height: "50px",
+              },
+              endAdornment: (
+                <InputAdornment position="start">
+                  <AccountCircle />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+
+        <div style={{ marginTop: "20px" }}>
           <TextField
             label="Username"
             id="username"
             fullWidth
+            name="username"
+            onChange={handleChange}
             InputProps={{
               style: {
                 borderRadius: "30px",
@@ -44,24 +98,6 @@ function RegisterForm() {
               ),
             }}
           />
-          <div style={{ marginTop: "20px" }}>
-            <TextField
-              label="Name"
-              id="name"
-              fullWidth
-              InputProps={{
-                style: {
-                  borderRadius: "30px",
-                  height: "50px",
-                },
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircle />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
 
           <FormControl variant="outlined" sx={{ marginTop: 2, width: "100%" }}>
             <InputLabel htmlFor="outlined-adornment-password">
@@ -70,6 +106,8 @@ function RegisterForm() {
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
+              onChange={handleChange}
+              name="password"
               style={{
                 borderRadius: "30px",
                 position: "relative",
@@ -111,6 +149,8 @@ function RegisterForm() {
           </Button>
           <br />
         </div>
+    </form>
+        
       </div>
     </div>
   );
