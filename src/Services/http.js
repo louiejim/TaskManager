@@ -1,28 +1,30 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL:`http://localhost:3001/api`  
-})
+  baseURL: `http://localhost:3001/api/`,
+});
 
+http.interceptors.response.use(null, (error) => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+  if (!expectedError) {
+    console.log("An unexpected Error");
+  }
 
-http.interceptors.response.use( null , (error)=>{
-    const expectedError= error.response&& error.response.status >= 400 && error.response.status <500
-    if(!expectedError){
-        console.log('An unexpected Error')
-    }
+  return Promise.reject(error);
+});
 
-    return Promise.reject(error)
-})
-
-http.interceptors.request.use((request)=>{                //USE THIS FOR THE Header
-const accessToken = localStorage.getItem('accessToken')
-if(accessToken){
-    request.headers={
-        Authorization: `Bearer ${accessToken}`
-    }
-}
-return request
-})
-
+http.interceptors.request.use((request) => {
+  //USE THIS FOR THE Header
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken) {
+    request.headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
+  return request;
+});
 
 export default http;
