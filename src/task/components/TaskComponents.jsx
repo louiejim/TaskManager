@@ -41,7 +41,6 @@ function TaskComponents() {
       setLoading(true);
       await Service.editTask(id, { completed: data });
       setLoading(false);
-      console.log(data);
       setTask((prevTask) =>
         prevTask.map((taskItem) => {
           if (taskItem.id === id) {
