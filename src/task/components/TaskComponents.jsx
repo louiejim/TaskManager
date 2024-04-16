@@ -3,7 +3,7 @@ import * as Service from "../../Services/task";
 import { Box, CardActions, Grid } from "@mui/material";
 import EditComponent from "./EditComponent";
 import { getCurrentUser } from "../../Services/auth";
-import EditTitle from "./EditTitle";
+import AddTaskPage from "../pages/AddTaskPage";
 
 function TaskComponents() {
   const [task, setTask] = useState([]);
@@ -13,28 +13,33 @@ function TaskComponents() {
   useEffect(() => {
     setLoading(true);
 
-    if (isAdmin) {
-      Service.getAllTask()
-        .then(({ data }) => {
-          setTask(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.error("Error Fetching task", error);
-        });
-    } else {
-      Service.getTask()
-        .then(({ data }) => {
-          setTask(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.error("Error Fetching task", error);
-        });
+    const fetchData = async () => {
+      try {
+        const response = isAdmin
+          ? await Service.getAllTask()
+          : await Service.getTask();
+        setTask(response.data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchData();
+  }, [task.title]);
+
+  const onSave = async (form) => {
+    try {
+      setLoading(true);
+      const response = await Service.addTask(form);
+      setTask((prevTask) => [...prevTask, response.data]);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error editing task", error);
     }
-  }, []);
+  };
 
   const onComplete = async (id, data) => {
     try {
@@ -68,7 +73,11 @@ function TaskComponents() {
     </div>
   ) : (
     <>
-      <h1>TASK</h1>
+      <div style={{ marginTop: 90, position: "relative" }}>
+        <div style={{ position: "absolute", right: 20 }}>
+          <AddTaskPage onSave={onSave} />
+        </div>
+      </div>
 
       <Grid container spacing={2}>
         {task.map((task, index) => {
@@ -77,7 +86,8 @@ function TaskComponents() {
               <Box
                 sx={{
                   p: 2,
-                  margin: 2,
+
+                  margin: 3,
                   maxWidth: 500,
                   flexGrow: 1,
                   backgroundColor: task.completed ? "lightgreen" : "lightgray",
@@ -98,9 +108,7 @@ function TaskComponents() {
                     onComplete={onComplete}
                   />
                 </div>
-                <CardActions>
-                  <EditTitle />
-                </CardActions>
+                <CardActions></CardActions>
               </Box>
             </Grid>
           );

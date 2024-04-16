@@ -5,8 +5,12 @@ import RegisterPage from "./login/pages/RegisterPage";
 import * as authService from "./Services/auth";
 import { useState } from "react";
 import TaskComponents from "./task/components/TaskComponents";
+import { CssBaseline } from "@mui/material";
+import NavBar from "./task/components/NavBar";
 
 function App() {
+  const currentUser = authService.getCurrentUser();
+
   const [accessToken, setAccessToken] = useState(authService.getAccessToken());
   const navigate = useNavigate();
 
@@ -22,14 +26,22 @@ function App() {
       }
     }
   };
+  const handleLogout = async () => {
+    authService.logout();
+    setAccessToken(null);
+    navigate("/login");
+  };
 
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to={"login"}></Navigate>} />
-      <Route path="login" element={<LoginPage onLogin={handleLogin} />} />
-      <Route path="register" element={<RegisterPage></RegisterPage>} />
-      <Route path="task" element={<TaskComponents />} />
-    </Routes>
+    <CssBaseline>
+      <NavBar onLogout={handleLogout} />
+      <Routes>
+        <Route path="/" element={<Navigate to={"login"}></Navigate>} />
+        <Route path="login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route path="register" element={<RegisterPage></RegisterPage>} />
+        <Route path="task" element={<TaskComponents />} />
+      </Routes>
+    </CssBaseline>
   );
 }
 

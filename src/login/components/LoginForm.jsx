@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import "./loginpage.css";
 import { Link } from "react-router-dom";
 
-function LoginForm({onLogin}) {
+function LoginForm({ onLogin }) {
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -33,11 +33,11 @@ function LoginForm({onLogin}) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await onLogin(form.username,form.password)
-    } catch(error){
-      console.log("error",error)
-      if(error.response && (error.response.status===400)){
-        alert (error.reponse.data.message)
+      await onLogin(form.username, form.password);
+    } catch (error) {
+      console.log("error", error);
+      if (error.response && error.response.status === 400) {
+        alert(error.reponse.data.message);
       }
     }
   };
@@ -56,6 +56,7 @@ function LoginForm({onLogin}) {
               name="username"
               onChange={handleOnChange}
               fullWidth
+              autoComplete="username"
               InputProps={{
                 style: {
                   borderRadius: "30px",
@@ -82,6 +83,7 @@ function LoginForm({onLogin}) {
                 name="password"
                 onChange={handleOnChange}
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 style={{
                   borderRadius: "30px",
                   position: "relative",

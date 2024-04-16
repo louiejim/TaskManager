@@ -19,6 +19,15 @@ export function editTask(id, completed) {
       delete complete[key];
     }
   });
-
   return http.put(`tasks/${id}`, complete);
+}
+
+export function addTask(task) {
+  const tasks = { ...task };
+  Object.keys(tasks).forEach((key) => {
+    if (task[key] === "" || task[key] === null || task[key] === undefined) {
+      delete task[key];
+    }
+  });
+  return http.post(`tasks`, task);
 }
