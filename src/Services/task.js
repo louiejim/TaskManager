@@ -31,3 +31,7 @@ export function addTask(task) {
   });
   return http.post(`tasks`, task);
 }
+
+export function deleteTask(id) {
+  return http.delete(`tasks/${id}`);
+}

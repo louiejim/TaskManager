@@ -12,7 +12,7 @@ function AddTaskPage({ onSave }) {
 
   const onInput = ({ currentTarget: input }) => {
     setForm({
-      [input.name]: input.value,
+      [input.name]: input.value.toUpperCase(),
     });
   };
 

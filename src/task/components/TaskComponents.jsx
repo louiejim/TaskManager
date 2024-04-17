@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
 import * as Service from "../../Services/task";
-import { Box, CardActions, Grid } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Typography,
+} from "@mui/material";
 import EditComponent from "./EditComponent";
 import { getCurrentUser } from "../../Services/auth";
 import AddTaskPage from "../pages/AddTaskPage";
+import DeleteComponent from "./DeleteComponent";
 
 function TaskComponents() {
   const [task, setTask] = useState([]);
@@ -60,6 +70,22 @@ function TaskComponents() {
     }
   };
 
+  const onDelete = async (id) => {
+    const tasks = [...task];
+    try {
+      setLoading(true);
+      await Service.deleteTask(id);
+      setTask(task.filter((tasks) => tasks.id !== id));
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.status === 404) {
+        alert("Data might have already been deleted");
+      }
+      setTask(tasks);
+    }
+  };
+
   return loading ? (
     <div
       style={{
@@ -74,16 +100,18 @@ function TaskComponents() {
   ) : (
     <>
       <div style={{ marginTop: 90, position: "relative" }}>
-        <div style={{ position: "absolute", right: 20 }}>
-          <AddTaskPage onSave={onSave} />
-        </div>
+        {!isAdmin && (
+          <div style={{ position: "absolute", right: 20 }}>
+            <AddTaskPage onSave={onSave} />
+          </div>
+        )}
       </div>
 
       <Grid container spacing={2}>
         {task.map((task, index) => {
           return (
             <Grid key={index} item xs={3}>
-              <Box
+              <Card
                 sx={{
                   p: 2,
 
@@ -93,23 +121,25 @@ function TaskComponents() {
                   backgroundColor: task.completed ? "lightgreen" : "lightgray",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px",
-                  }}
-                >
-                  <span>{task.title}</span>
-                  <EditComponent
-                    id={task.id}
-                    complete={task.completed}
-                    onComplete={onComplete}
-                  />
-                </div>
-                <CardActions></CardActions>
-              </Box>
+                <CardHeader
+                  action={
+                    <EditComponent
+                      id={task.id}
+                      complete={task.completed}
+                      onComplete={onComplete}
+                    />
+                  }
+                  title={`Activity no. ${index + 1}`}
+                ></CardHeader>
+                <CardContent style={{ Padding: "0" }}>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {task.title}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <DeleteComponent id={task.id} onDelete={onDelete} />
+                </CardActions>
+              </Card>
             </Grid>
           );
         })}
