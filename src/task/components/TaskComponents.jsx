@@ -14,6 +14,7 @@ import EditComponent from "./EditComponent";
 import { getCurrentUser } from "../../Services/auth";
 import AddTaskPage from "../pages/AddTaskPage";
 import DeleteComponent from "./DeleteComponent";
+import EditTitlePage from "../pages/EditTitlePage";
 
 function TaskComponents() {
   const [task, setTask] = useState([]);
@@ -22,7 +23,6 @@ function TaskComponents() {
 
   useEffect(() => {
     setLoading(true);
-
     const fetchData = async () => {
       try {
         const response = isAdmin
@@ -42,9 +42,22 @@ function TaskComponents() {
   const onSave = async (form) => {
     try {
       setLoading(true);
-      const response = await Service.addTask(form);
-      setTask((prevTask) => [...prevTask, response.data]);
-      setLoading(false);
+      if (form.id === "") {
+        const response = await Service.addTask(form);
+        setTask((prevTask) => [...prevTask, response.data]);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        await Service.editTask(form.id, form);
+        setTask((prevTask) =>
+          prevTask.map((taskItem) => {
+            if (taskItem.id === form.id) {
+              return { ...taskItem, ...form };
+            }
+            return taskItem;
+          })
+        );
+      }
     } catch (error) {
       setLoading(false);
       console.error("Error editing task", error);
@@ -136,9 +149,18 @@ function TaskComponents() {
                     {task.title}
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  <DeleteComponent id={task.id} onDelete={onDelete} />
-                </CardActions>
+                {!isAdmin && (
+                  <CardActions>
+                    <DeleteComponent id={task.id} onDelete={onDelete} />
+                    <EditTitlePage
+                      initialValue={{
+                        id: task.id,
+                        title: task.title,
+                      }}
+                      onSave={onSave}
+                    />
+                  </CardActions>
+                )}
               </Card>
             </Grid>
           );

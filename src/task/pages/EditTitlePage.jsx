@@ -1,29 +1,31 @@
-import { Box, Button, Modal, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import React, { useState } from "react";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import EditIcon from "@mui/icons-material/Edit";
 import TitleComponent from "../components/TitleComponent";
-function AddTaskPage({ onSave }) {
+
+function EditTitlePage({ initialValue, onSave }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   return (
     <>
       <Button
+        variant="contained"
         onClick={handleOpen}
-        variant="outlined"
+        startIcon={<EditIcon />}
         size="small"
-        endIcon={<PlaylistAddIcon />}
       >
-        ADD TASK
+        EDIT
       </Button>
       <TitleComponent
         open={open}
         handleClose={handleClose}
+        initialValue={initialValue}
         onSave={onSave}
-        initialValue={{ title: "", id: "" }}
       ></TitleComponent>
     </>
   );
 }
 
-export default AddTaskPage;
+export default EditTitlePage;

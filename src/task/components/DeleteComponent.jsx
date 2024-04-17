@@ -7,7 +7,12 @@ function DeleteComponent({ onDelete, id }) {
   const handleClose = () => setOpen(false);
   return (
     <>
-      <Button color="error" variant="contained" onClick={handleOpen}>
+      <Button
+        color="error"
+        variant="contained"
+        size="small"
+        onClick={handleOpen}
+      >
         DELETE
       </Button>
 
@@ -32,6 +37,7 @@ function DeleteComponent({ onDelete, id }) {
         >
           <Button
             variant="contained"
+            size="small"
             fullWidth
             onClick={() => {
               onDelete(id);
