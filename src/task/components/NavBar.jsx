@@ -16,7 +16,7 @@ function NavBar({ onLogout }) {
               variant="h6"
               component="div"
               sx={{ flexGrow: 1 }}
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/task")}
             >
               TASK APPLICATION
             </Typography>

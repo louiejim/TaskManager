@@ -7,6 +7,7 @@ import { useState } from "react";
 import TaskComponents from "./task/components/TaskComponents";
 import { CssBaseline } from "@mui/material";
 import NavBar from "./task/components/NavBar";
+import NotFound from "./task/pages/NotFound";
 
 function App() {
   const currentUser = authService.getCurrentUser();
@@ -36,10 +37,13 @@ function App() {
     <CssBaseline>
       <NavBar onLogout={handleLogout} />
       <Routes>
-        <Route path="/" element={<Navigate to={"login"}></Navigate>} />
+        <Route path="/" element={<Navigate to={"login"} />} />
         <Route path="login" element={<LoginPage onLogin={handleLogin} />} />
-        <Route path="register" element={<RegisterPage></RegisterPage>} />
-        <Route path="task" element={<TaskComponents />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route
+          path="task"
+          element={accessToken ? <TaskComponents /> : <NotFound />}
+        />
       </Routes>
     </CssBaseline>
   );

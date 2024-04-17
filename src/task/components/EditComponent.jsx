@@ -2,7 +2,6 @@ import { Box, Button, Fab, Grid, Modal } from "@mui/material";
 import React, { useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { getCurrentUser } from "../../Services/auth";
-import EditIcon from "@mui/icons-material/Edit";
 
 function EditComponent({ id, complete, onComplete }) {
   const [open, setOpen] = useState(false);

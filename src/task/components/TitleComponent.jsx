@@ -1,6 +1,5 @@
 import { Box, Button, Modal, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import * as Service from "../../Services/task";
 
 function TitleComponent({ open, handleClose, onSave, initialValue }) {
   const onInput = ({ currentTarget: input }) => {
@@ -14,11 +13,10 @@ function TitleComponent({ open, handleClose, onSave, initialValue }) {
     id: "",
     title: "",
   });
+
   useEffect(() => {
     setForm(initialValue);
-  }, [initialValue]);
-
-  const click = () => {};
+  }, []);
 
   return (
     <Modal
@@ -52,7 +50,6 @@ function TitleComponent({ open, handleClose, onSave, initialValue }) {
             onClick={() => {
               handleClose();
               onSave(form);
-              click();
             }}
           >
             SAVE
